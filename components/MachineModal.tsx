@@ -134,7 +134,10 @@ export function MachineModal({ machine, onClose }: { machine: Machine; onClose: 
                   {selectedOs === 'mac' && (
                     <>
                       <li><span className="text-zinc-500 mr-2">1.</span>Download the <code className="text-zinc-300">.command</code> file</li>
-                      <li><span className="text-zinc-500 mr-2">2.</span>Open Terminal and run:<br /><code className="text-zinc-300 text-xs">xattr -d com.apple.quarantine ~/Downloads/{filename}</code></li>
+                      <li><span className="text-zinc-500 mr-2">2.</span>Open Terminal and run:<br />
+                        <code className="text-zinc-300 text-xs">xattr -d com.apple.quarantine ~/Downloads/{filename}</code><br />
+                        <span className="text-zinc-600 text-xs">If your browser saved it with a different name, replace <code className="text-zinc-500">{filename}</code> with the actual filename.</span>
+                      </li>
                       <li><span className="text-zinc-500 mr-2">3.</span>Double-click the file to run it</li>
                       <li><span className="text-zinc-500 mr-2">4.</span>Restart OrcaSlicer to see the new profiles</li>
                     </>
