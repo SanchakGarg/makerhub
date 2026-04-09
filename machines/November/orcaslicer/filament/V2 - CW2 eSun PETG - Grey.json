@@ -1,0 +1,67 @@
+{
+    "complete_print_exhaust_fan_speed": [
+        "80"
+    ],
+    "default_filament_colour": [
+        "#6D6D6D"
+    ],
+    "during_print_exhaust_fan_speed": [
+        "60"
+    ],
+    "enable_pressure_advance": [
+        "1"
+    ],
+    "fan_cooling_layer_time": [
+        "30"
+    ],
+    "fan_max_speed": [
+        "90"
+    ],
+    "fan_min_speed": [
+        "40"
+    ],
+    "filament_end_gcode": [
+        "; filament end gcode "
+    ],
+    "filament_flow_ratio": [
+        "1.0925"
+    ],
+    "filament_max_volumetric_speed": [
+        "9"
+    ],
+    "filament_retraction_length": [
+        "1"
+    ],
+    "filament_settings_id": [
+        "V2 - CW2 eSun PETG - Grey"
+    ],
+    "filament_start_gcode": [
+        "; filament start gcode"
+    ],
+    "from": "User",
+    "inherits": "Generic PET template @November - Voron 2 r2 0.4 nozzle",
+    "is_custom_defined": "0",
+    "name": "V2 - CW2 eSun PETG - Grey",
+    "nozzle_temperature": [
+        "235"
+    ],
+    "nozzle_temperature_initial_layer": [
+        "238"
+    ],
+    "overhang_fan_speed": [
+        "90"
+    ],
+    "overhang_fan_threshold": [
+        "25%"
+    ],
+    "pressure_advance": [
+        "0.04"
+    ],
+    "slow_down_layer_time": [
+        "0"
+    ],
+    "temperature_vitrification": [
+        "80"
+    ],
+    "version": "1.7.0.2"
+}

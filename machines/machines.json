@@ -1,0 +1,32 @@
+[
+  {
+    "id": "June",
+    "name": "June",
+    "brand": "Voron Design",
+    "model": "Voron 2.4 r2",
+    "type": "CoreXY",
+    "description": "Voron 2.4 r2 with LGX extruder. Fast, enclosed CoreXY running Klipper.",
+    "tags": ["CoreXY", "Klipper", "Enclosed"],
+    "nozzle": "0.4mm",
+    "buildVolume": "350 × 350 × 350 mm",
+    "extruder": "LGX",
+    "accent": "#EAB308",
+    "hasGuide": true,
+    "hasConfig": true
+  },
+  {
+    "id": "November",
+    "name": "November",
+    "brand": "Voron Design",
+    "model": "Voron 2.4 r2",
+    "type": "CoreXY",
+    "description": "Voron 2.4 r2 with CW2 extruder. Enclosed CoreXY running Klipper.",
+    "tags": ["CoreXY", "Klipper", "Enclosed"],
+    "nozzle": "0.4mm",
+    "buildVolume": "350 × 350 × 350 mm",
+    "extruder": "CW2",
+    "accent": "#9CA3AF",
+    "hasGuide": true,
+    "hasConfig": true
+  }
+]

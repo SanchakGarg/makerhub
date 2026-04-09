@@ -1,0 +1,58 @@
+{
+    "complete_print_exhaust_fan_speed": [
+        "80"
+    ],
+    "default_filament_colour": [
+        "#000000"
+    ],
+    "during_print_exhaust_fan_speed": [
+        "60"
+    ],
+    "enable_pressure_advance": [
+        "1"
+    ],
+    "fan_max_speed": [
+        "35"
+    ],
+    "fan_min_speed": [
+        "35"
+    ],
+    "filament_end_gcode": [
+        "; filament end gcode \n"
+    ],
+    "filament_flow_ratio": [
+        "1.0703"
+    ],
+    "filament_max_volumetric_speed": [
+        "12"
+    ],
+    "filament_settings_id": [
+        "V2 - CW2 eSun ABS+ - Black"
+    ],
+    "filament_start_gcode": [
+        "; Filament gcode\n"
+    ],
+    "from": "User",
+    "hot_plate_temp": [
+        "110"
+    ],
+    "inherits": "Generic ABS template @November - Voron 2 r2 0.4 nozzle",
+    "is_custom_defined": "0",
+    "name": "V2 - CW2 eSun ABS+ - Black",
+    "nozzle_temperature": [
+        "255"
+    ],
+    "nozzle_temperature_range_high": [
+        "270"
+    ],
+    "pressure_advance": [
+        "0.025"
+    ],
+    "slow_down_layer_time": [
+        "1"
+    ],
+    "slow_down_min_speed": [
+        "10"
+    ],
+    "version": "1.7.0.2"
+}

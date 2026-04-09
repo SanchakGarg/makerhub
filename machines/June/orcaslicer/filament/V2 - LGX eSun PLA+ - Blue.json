@@ -1,0 +1,58 @@
+{
+    "complete_print_exhaust_fan_speed": [
+        "80"
+    ],
+    "default_filament_colour": [
+        "#0000FF"
+    ],
+    "during_print_exhaust_fan_speed": [
+        "60"
+    ],
+    "enable_pressure_advance": [
+        "1"
+    ],
+    "filament_end_gcode": [
+        "; filament end gcode \n"
+    ],
+    "filament_flow_ratio": [
+        "0.98"
+    ],
+    "filament_settings_id": [
+        "V2 - LGX eSun PLA+ - Blue"
+    ],
+    "filament_start_gcode": [
+        "; filament start gcode"
+    ],
+    "from": "User",
+    "hot_plate_temp": [
+        "60"
+    ],
+    "hot_plate_temp_initial_layer": [
+        "60"
+    ],
+    "inherits": "Generic PLA template @June - Voron 2 r2 0.4 nozzle",
+    "is_custom_defined": "0",
+    "name": "V2 - LGX eSun PLA+ - Blue",
+    "nozzle_temperature": [
+        "205"
+    ],
+    "nozzle_temperature_initial_layer": [
+        "203"
+    ],
+    "nozzle_temperature_range_high": [
+        "230"
+    ],
+    "pressure_advance": [
+        "0.057"
+    ],
+    "slow_down_layer_time": [
+        "8"
+    ],
+    "slow_down_min_speed": [
+        "10"
+    ],
+    "temperature_vitrification": [
+        "60"
+    ],
+    "version": "1.7.0.2"
+}

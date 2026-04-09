@@ -1,0 +1,14 @@
+{
+  "id": "June",
+  "name": "June",
+  "brand": "Voron Design",
+  "model": "Voron 2.4 r2",
+  "type": "CoreXY",
+  "description": "Voron 2.4 r2 with LGX extruder. Fast, enclosed CoreXY running Klipper.",
+  "tags": ["CoreXY", "Klipper", "Enclosed"],
+  "nozzle": "0.4mm",
+  "buildVolume": "350 × 350 × 350 mm",
+  "extruder": "LGX",
+  "firmware": "Klipper",
+  "notes": "LGX extruder. Use V2 - LGX filament profiles in OrcaSlicer."
+}
