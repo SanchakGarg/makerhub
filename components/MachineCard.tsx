@@ -15,7 +15,7 @@ export function MachineCard({ machine, onClick }: { machine: Machine; onClick: (
       />
       {/* Corner glow */}
       <div
-        className="absolute top-0 right-0 w-32 h-32 opacity-10 group-hover:opacity-20 transition-opacity rounded-bl-full"
+        className="absolute top-0 right-0 w-28 h-28 opacity-10 group-hover:opacity-20 transition-opacity rounded-bl-full pointer-events-none"
         style={{ backgroundColor: machine.accent }}
       />
 
@@ -47,9 +47,9 @@ export function MachineCard({ machine, onClick }: { machine: Machine; onClick: (
               ))}
             </div>
           </div>
-          <div className="text-right text-sm text-muted-foreground shrink-0">
-            <div className="font-mono">{machine.nozzle}</div>
-            <div className="text-xs mt-1">{machine.model}</div>
+          <div className="text-right text-sm text-muted-foreground shrink-0 max-w-[120px]">
+            <div className="font-mono break-words leading-snug">{machine.nozzle}</div>
+            <div className="text-xs mt-1 break-words">{machine.model}</div>
           </div>
         </div>
       </CardContent>
