@@ -13,9 +13,9 @@ export function MachineCard({ machine, onClick }: { machine: Machine; onClick: (
         className="absolute top-0 right-0 w-24 h-1"
         style={{ backgroundColor: machine.accent }}
       />
-      {/* Corner glow — height matches card, making a true quarter-circle */}
+      {/* Corner glow */}
       <div
-        className="absolute top-0 right-0 h-full aspect-square opacity-10 group-hover:opacity-20 transition-opacity rounded-bl-full pointer-events-none"
+        className="absolute top-0 right-0 w-32 h-32 opacity-10 group-hover:opacity-20 transition-opacity rounded-bl-full"
         style={{ backgroundColor: machine.accent }}
       />
 
