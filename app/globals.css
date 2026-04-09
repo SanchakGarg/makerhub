@@ -134,28 +134,28 @@
   font-weight: 600;
   margin-top: 1.25em;
   margin-bottom: 0.5em;
-  color: #fff;
+  color: var(--foreground);
 }
 .guide-prose h1 { font-size: 1.4rem; }
 .guide-prose h2 { font-size: 1.15rem; }
 .guide-prose h3 { font-size: 1rem; }
-.guide-prose p { margin-bottom: 0.75em; color: #a1a1aa; line-height: 1.65; }
-.guide-prose ul, .guide-prose ol { margin-left: 1.25em; margin-bottom: 0.75em; color: #a1a1aa; }
+.guide-prose p { margin-bottom: 0.75em; color: var(--muted-foreground); line-height: 1.65; }
+.guide-prose ul, .guide-prose ol { margin-left: 1.25em; margin-bottom: 0.75em; color: var(--muted-foreground); }
 .guide-prose li { margin-bottom: 0.25em; }
 .guide-prose code {
-  background: #27272a;
+  background: var(--muted);
   padding: 0.1em 0.35em;
   border-radius: 4px;
   font-size: 0.85em;
-  color: #e4e4e7;
+  color: var(--foreground);
 }
 .guide-prose pre {
-  background: #18181b;
+  background: var(--muted);
   padding: 1em;
   border-radius: 8px;
   overflow-x: auto;
   margin-bottom: 0.75em;
 }
 .guide-prose pre code { background: none; padding: 0; }
-.guide-prose a { color: #d4d4d8; text-decoration: underline; }
-.guide-prose strong { color: #e4e4e7; }
+.guide-prose a { color: var(--foreground); text-decoration: underline; }
+.guide-prose strong { color: var(--foreground); }

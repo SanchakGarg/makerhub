@@ -20,7 +20,6 @@ function CopyBox({ command }: { command: string }) {
     if (navigator.clipboard) {
       navigator.clipboard.writeText(command).then(() => toast.success('Copied to clipboard'));
     } else {
-      // Fallback for HTTP (non-secure context)
       const el = document.createElement('textarea');
       el.value = command;
       el.style.position = 'fixed';
@@ -33,12 +32,12 @@ function CopyBox({ command }: { command: string }) {
     }
   };
   return (
-    <div className="flex items-center gap-2 bg-zinc-900 border border-zinc-700 rounded-md px-3 py-2 mt-1">
-      <code className="text-zinc-300 text-xs flex-1 break-all font-mono">{command}</code>
+    <div className="flex items-center gap-2 bg-muted border border-border rounded-md px-3 py-2 mt-1">
+      <code className="text-foreground text-xs flex-1 break-all font-mono">{command}</code>
       <Button
         variant="ghost"
         size="icon"
-        className="shrink-0 h-6 w-6 text-zinc-400 hover:text-white hover:bg-zinc-700"
+        className="shrink-0 h-6 w-6 text-muted-foreground hover:text-foreground"
         onClick={copy}
       >
         <Copy className="h-3 w-3" />
@@ -69,17 +68,20 @@ export function MachineModal({ machine, onClose }: { machine: Machine; onClose: 
   const osOption = OS_OPTIONS.find((o) => o.key === selectedOs)!;
   const downloadUrl = `/api/installer/${machine.id}/${selectedOs}`;
   const filename = `install-${machine.id}${osOption.ext}`;
+  const slicerName = machine.slicer === 'bambustudio' ? 'Bambu Studio' : 'OrcaSlicer';
 
   return (
     <Dialog open onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="max-w-2xl bg-zinc-950 border-zinc-800 text-white p-0 overflow-hidden">
+      <DialogContent className="max-w-2xl bg-card border-border p-0 overflow-hidden">
         {/* Accent bar */}
         <div className="h-1 w-full" style={{ backgroundColor: machine.accent }} />
 
         <div className="p-6">
           <DialogHeader className="mb-4">
             <div className="flex items-center gap-3">
-              <DialogTitle className="text-2xl font-bold" style={{ fontFamily: 'var(--font-space-grotesk)' }}>{machine.name}</DialogTitle>
+              <DialogTitle className="text-2xl font-bold" style={{ fontFamily: 'var(--font-space-grotesk)' }}>
+                {machine.name}
+              </DialogTitle>
               <span
                 className="text-xs font-mono px-2 py-0.5 rounded-full border"
                 style={{ color: machine.accent, borderColor: machine.accent + '55' }}
@@ -87,10 +89,10 @@ export function MachineModal({ machine, onClose }: { machine: Machine; onClose: 
                 {machine.extruder}
               </span>
             </div>
-            <p className="text-sm text-zinc-400">{machine.description}</p>
+            <p className="text-sm text-muted-foreground">{machine.description}</p>
           </DialogHeader>
 
-          <Separator className="mb-4 bg-zinc-800" />
+          <Separator className="mb-4" />
 
           {/* Specs row */}
           <div className="grid grid-cols-3 gap-4 mb-6">
@@ -103,30 +105,24 @@ export function MachineModal({ machine, onClose }: { machine: Machine; onClose: 
               ['Extruder', machine.extruder],
             ].map(([label, value]) => (
               <div key={label}>
-                <div className="text-xs text-zinc-500 mb-0.5">{label}</div>
+                <div className="text-xs text-muted-foreground mb-0.5">{label}</div>
                 <div className="text-sm font-medium">{value}</div>
               </div>
             ))}
           </div>
 
           <Tabs defaultValue="install">
-            <TabsList className="bg-zinc-900 border border-zinc-800 mb-4">
-              <TabsTrigger value="install" className="data-[state=active]:bg-zinc-800">
-                Install
-              </TabsTrigger>
-              <TabsTrigger value="guide" className="data-[state=active]:bg-zinc-800">
-                Setup Guide
-              </TabsTrigger>
+            <TabsList className="mb-4">
+              <TabsTrigger value="install">Install</TabsTrigger>
+              <TabsTrigger value="guide">Setup Guide</TabsTrigger>
             </TabsList>
 
             <TabsContent value="install">
               <div className="space-y-4">
-                <p className="text-sm text-zinc-400">
+                <p className="text-sm text-muted-foreground">
                   Download and run the installer to copy configs directly into the correct folders.{' '}
-                  <span className="text-zinc-300">
-                    {machine.slicer === 'bambustudio' ? 'Bambu Studio' : 'OrcaSlicer'}
-                  </span>{' '}
-                  must be installed first.
+                  <span className="text-foreground font-medium">{slicerName}</span> must be
+                  installed first.
                 </p>
 
                 {/* OS picker */}
@@ -138,11 +134,9 @@ export function MachineModal({ machine, onClose }: { machine: Machine; onClose: 
                       className={`px-4 py-2 rounded-md text-sm font-medium border transition-colors ${
                         selectedOs === os.key
                           ? 'border-transparent text-black'
-                          : 'border-zinc-700 text-zinc-400 hover:border-zinc-500'
+                          : 'border-border text-muted-foreground hover:text-foreground hover:border-muted-foreground/40'
                       }`}
-                      style={
-                        selectedOs === os.key ? { backgroundColor: machine.accent } : undefined
-                      }
+                      style={selectedOs === os.key ? { backgroundColor: machine.accent } : undefined}
                     >
                       {os.label}
                     </button>
@@ -151,44 +145,45 @@ export function MachineModal({ machine, onClose }: { machine: Machine; onClose: 
 
                 {/* Download button */}
                 <a href={downloadUrl} download={filename}>
-                  <Button
-                    className="w-full font-semibold text-black"
-                    style={{ backgroundColor: machine.accent }}
-                  >
+                  <Button className="w-full font-semibold text-black" style={{ backgroundColor: machine.accent }}>
                     Download {filename}
                   </Button>
                 </a>
 
                 {/* Steps */}
-                <ol className="space-y-2 text-sm text-zinc-400 list-none">
+                <ol className="space-y-2 text-sm text-muted-foreground list-none">
                   {selectedOs === 'windows' && (
                     <>
-                      <li><span className="text-zinc-500 mr-2">1.</span>Download the <code className="text-zinc-300">.bat</code> file</li>
-                      <li><span className="text-zinc-500 mr-2">2.</span>Double-click to run — allow PowerShell if prompted</li>
-                      <li><span className="text-zinc-500 mr-2">3.</span>Restart OrcaSlicer to see the new profiles</li>
+                      <li><span className="text-muted-foreground/60 mr-2">1.</span>Download the <code className="text-foreground">.bat</code> file</li>
+                      <li><span className="text-muted-foreground/60 mr-2">2.</span>Double-click to run — allow PowerShell if prompted</li>
+                      <li><span className="text-muted-foreground/60 mr-2">3.</span>Restart {slicerName} to see the new profiles</li>
                     </>
                   )}
                   {selectedOs === 'mac' && (
                     <>
-                      <li><span className="text-zinc-500 mr-2">1.</span>Download the <code className="text-zinc-300">.command</code> file</li>
+                      <li><span className="text-muted-foreground/60 mr-2">1.</span>Download the <code className="text-foreground">.command</code> file</li>
                       <li>
-                        <span className="text-zinc-500 mr-2">2.</span>Open Terminal and run:
+                        <span className="text-muted-foreground/60 mr-2">2.</span>Open Terminal and run:
                         <CopyBox command={`xattr -d com.apple.quarantine ~/Downloads/${filename} && chmod +x ~/Downloads/${filename}`} />
-                        <span className="text-zinc-600 text-xs mt-1 block">If your browser saved it with a different name, replace <code className="text-zinc-500">{filename}</code> with the actual filename.</span>
+                        <span className="text-muted-foreground/50 text-xs mt-1 block">
+                          If your browser saved it with a different name, replace <code className="text-muted-foreground">{filename}</code> with the actual filename.
+                        </span>
                       </li>
-                      <li><span className="text-zinc-500 mr-2">3.</span>Double-click the file to run it</li>
-                      <li><span className="text-zinc-500 mr-2">4.</span>Restart OrcaSlicer to see the new profiles</li>
+                      <li><span className="text-muted-foreground/60 mr-2">3.</span>Double-click the file to run it</li>
+                      <li><span className="text-muted-foreground/60 mr-2">4.</span>Restart {slicerName} to see the new profiles</li>
                     </>
                   )}
                   {selectedOs === 'linux' && (
                     <>
-                      <li><span className="text-zinc-500 mr-2">1.</span>Download the <code className="text-zinc-300">.sh</code> file</li>
+                      <li><span className="text-muted-foreground/60 mr-2">1.</span>Download the <code className="text-foreground">.sh</code> file</li>
                       <li>
-                        <span className="text-zinc-500 mr-2">2.</span>Open Terminal and run:
+                        <span className="text-muted-foreground/60 mr-2">2.</span>Open Terminal and run:
                         <CopyBox command={`chmod +x ~/Downloads/${filename} && ~/Downloads/${filename}`} />
-                        <span className="text-zinc-600 text-xs mt-1 block">If your browser saved it with a different name, replace <code className="text-zinc-500">{filename}</code> with the actual filename.</span>
+                        <span className="text-muted-foreground/50 text-xs mt-1 block">
+                          If your browser saved it with a different name, replace <code className="text-muted-foreground">{filename}</code> with the actual filename.
+                        </span>
                       </li>
-                      <li><span className="text-zinc-500 mr-2">3.</span>Restart OrcaSlicer to see the new profiles</li>
+                      <li><span className="text-muted-foreground/60 mr-2">3.</span>Restart {slicerName} to see the new profiles</li>
                     </>
                   )}
                 </ol>
@@ -202,7 +197,7 @@ export function MachineModal({ machine, onClose }: { machine: Machine; onClose: 
                   dangerouslySetInnerHTML={{ __html: guideHtml }}
                 />
               ) : (
-                <p className="text-sm text-zinc-500">Loading guide…</p>
+                <p className="text-sm text-muted-foreground">Loading guide…</p>
               )}
             </TabsContent>
           </Tabs>

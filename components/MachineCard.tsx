@@ -6,7 +6,7 @@ export function MachineCard({ machine, onClick }: { machine: Machine; onClick: (
   return (
     <Card
       onClick={onClick}
-      className="relative bg-zinc-950 border-zinc-800 cursor-pointer hover:border-zinc-600 transition-colors overflow-hidden group"
+      className="relative bg-card border-border cursor-pointer hover:border-muted-foreground/40 transition-colors overflow-hidden group"
     >
       {/* Accent strip top-right corner */}
       <div
@@ -23,7 +23,9 @@ export function MachineCard({ machine, onClick }: { machine: Machine; onClick: (
         <div className="flex items-start justify-between gap-4">
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-3 mb-1">
-              <h2 className="text-xl font-semibold" style={{ fontFamily: 'var(--font-space-grotesk)' }}>{machine.name}</h2>
+              <h2 className="text-xl font-semibold" style={{ fontFamily: 'var(--font-space-grotesk)' }}>
+                {machine.name}
+              </h2>
               <span
                 className="text-xs font-mono px-2 py-0.5 rounded-full border"
                 style={{ color: machine.accent, borderColor: machine.accent + '55' }}
@@ -31,20 +33,16 @@ export function MachineCard({ machine, onClick }: { machine: Machine; onClick: (
                 {machine.extruder}
               </span>
             </div>
-            <p className="text-sm text-zinc-400 mb-4">{machine.description}</p>
+            <p className="text-sm text-muted-foreground mb-4">{machine.description}</p>
             <div className="flex flex-wrap gap-1.5">
               {machine.tags.map((tag) => (
-                <Badge
-                  key={tag}
-                  variant="outline"
-                  className="text-xs text-zinc-400 border-zinc-700"
-                >
+                <Badge key={tag} variant="outline" className="text-xs text-muted-foreground">
                   {tag}
                 </Badge>
               ))}
             </div>
           </div>
-          <div className="text-right text-sm text-zinc-500 shrink-0">
+          <div className="text-right text-sm text-muted-foreground shrink-0">
             <div className="font-mono">{machine.nozzle}</div>
             <div className="text-xs mt-1">{machine.model}</div>
           </div>

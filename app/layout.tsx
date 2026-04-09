@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { Inter, Space_Grotesk, JetBrains_Mono } from 'next/font/google';
+import { Providers } from '@/components/providers';
 import { Toaster } from '@/components/ui/sonner';
 import './globals.css';
 
@@ -14,10 +15,12 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${inter.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable} dark`}>
-      <body className="min-h-screen bg-black text-white antialiased">
-        {children}
-        <Toaster theme="dark" />
+    <html lang="en" className={`${inter.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable}`} suppressHydrationWarning>
+      <body className="min-h-screen bg-background text-foreground antialiased">
+        <Providers>
+          {children}
+          <Toaster />
+        </Providers>
       </body>
     </html>
   );
