@@ -1,0 +1,9 @@
+.git
+.claude
+.next
+node_modules
+*.zip
+June-configs.zip
+November-configs.zip
+README.md
+.env*
