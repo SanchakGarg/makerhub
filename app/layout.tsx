@@ -8,7 +8,7 @@ const spaceGrotesk = Space_Grotesk({ variable: '--font-space-grotesk', subsets: 
 const jetbrainsMono = JetBrains_Mono({ variable: '--font-jetbrains-mono', subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'MakerHub',
+  title: '3D Printers',
   description: 'Makerspace 3D printer configs and setup guides',
 };
 
