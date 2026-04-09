@@ -17,8 +17,20 @@ import { Copy } from 'lucide-react';
 
 function CopyBox({ command }: { command: string }) {
   const copy = () => {
-    navigator.clipboard.writeText(command);
-    toast.success('Copied to clipboard');
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(command).then(() => toast.success('Copied to clipboard'));
+    } else {
+      // Fallback for HTTP (non-secure context)
+      const el = document.createElement('textarea');
+      el.value = command;
+      el.style.position = 'fixed';
+      el.style.opacity = '0';
+      document.body.appendChild(el);
+      el.select();
+      document.execCommand('copy');
+      document.body.removeChild(el);
+      toast.success('Copied to clipboard');
+    }
   };
   return (
     <div className="flex items-center gap-2 bg-zinc-900 border border-zinc-700 rounded-md px-3 py-2 mt-1">
@@ -168,7 +180,11 @@ export function MachineModal({ machine, onClose }: { machine: Machine; onClose: 
                   {selectedOs === 'linux' && (
                     <>
                       <li><span className="text-zinc-500 mr-2">1.</span>Download the <code className="text-zinc-300">.sh</code> file</li>
-                      <li><span className="text-zinc-500 mr-2">2.</span>Run <code className="text-zinc-300">chmod +x install-{machine.id}.sh && ./install-{machine.id}.sh</code></li>
+                      <li>
+                        <span className="text-zinc-500 mr-2">2.</span>Open Terminal and run:
+                        <CopyBox command={`chmod +x ~/Downloads/${filename} && ~/Downloads/${filename}`} />
+                        <span className="text-zinc-600 text-xs mt-1 block">If your browser saved it with a different name, replace <code className="text-zinc-500">{filename}</code> with the actual filename.</span>
+                      </li>
                       <li><span className="text-zinc-500 mr-2">3.</span>Restart OrcaSlicer to see the new profiles</li>
                     </>
                   )}
