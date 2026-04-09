@@ -39,7 +39,7 @@ export function MachineCard({ machine, onClick }: { machine: Machine; onClick: (
                 <Badge
                   key={tag}
                   variant="outline"
-                  className="text-xs"
+                  className="text-xs h-auto overflow-visible whitespace-normal"
                   style={{ color: machine.accent, borderColor: machine.accent + '55', backgroundColor: machine.accent + '11' }}
                 >
                   {tag}
