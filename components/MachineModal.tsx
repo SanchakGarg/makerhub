@@ -13,6 +13,26 @@ import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
 
+function CopyBox({ command }: { command: string }) {
+  const [copied, setCopied] = useState(false);
+  const copy = () => {
+    navigator.clipboard.writeText(command);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+  return (
+    <div className="flex items-center gap-2 bg-zinc-900 border border-zinc-700 rounded-md px-3 py-2 mt-1">
+      <code className="text-zinc-300 text-xs flex-1 break-all font-mono">{command}</code>
+      <button
+        onClick={copy}
+        className="shrink-0 text-xs text-zinc-400 hover:text-white transition-colors ml-2"
+      >
+        {copied ? 'Copied!' : 'Copy'}
+      </button>
+    </div>
+  );
+}
+
 const OS_OPTIONS = [
   { key: 'windows', label: 'Windows', ext: '.bat' },
   { key: 'mac', label: 'macOS', ext: '.command' },
@@ -134,9 +154,11 @@ export function MachineModal({ machine, onClose }: { machine: Machine; onClose: 
                   {selectedOs === 'mac' && (
                     <>
                       <li><span className="text-zinc-500 mr-2">1.</span>Download the <code className="text-zinc-300">.command</code> file</li>
-                      <li><span className="text-zinc-500 mr-2">2.</span>Open Terminal and run:<br />
-                        <code className="text-zinc-300 text-xs">xattr -d com.apple.quarantine ~/Downloads/{filename}</code><br />
-                        <span className="text-zinc-600 text-xs">If your browser saved it with a different name, replace <code className="text-zinc-500">{filename}</code> with the actual filename.</span>
+                      <li>
+                        <span className="text-zinc-500 mr-2">2.</span>Open Terminal and run these two commands:
+                        <CopyBox command={`xattr -d com.apple.quarantine ~/Downloads/${filename}`} />
+                        <CopyBox command={`chmod +x ~/Downloads/${filename}`} />
+                        <span className="text-zinc-600 text-xs mt-1 block">If your browser saved it with a different name, replace <code className="text-zinc-500">{filename}</code> with the actual filename.</span>
                       </li>
                       <li><span className="text-zinc-500 mr-2">3.</span>Double-click the file to run it</li>
                       <li><span className="text-zinc-500 mr-2">4.</span>Restart OrcaSlicer to see the new profiles</li>
