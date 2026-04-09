@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { Inter, Space_Grotesk, JetBrains_Mono } from 'next/font/google';
+import { Toaster } from '@/components/ui/sonner';
 import './globals.css';
 
 const inter = Inter({ variable: '--font-inter', subsets: ['latin'] });
@@ -14,7 +15,10 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${inter.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable} dark`}>
-      <body className="min-h-screen bg-black text-white antialiased">{children}</body>
+      <body className="min-h-screen bg-black text-white antialiased">
+        {children}
+        <Toaster theme="dark" />
+      </body>
     </html>
   );
 }
