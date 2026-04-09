@@ -15,6 +15,7 @@ export interface Machine {
   buildVolume: string;
   extruder: string;
   accent: string;
+  slicer: 'orcaslicer' | 'bambustudio';
   hasGuide: boolean;
   hasConfig: boolean;
 }
@@ -22,6 +23,11 @@ export interface Machine {
 export function getMachines(): Machine[] {
   const data = fs.readFileSync(path.join(MACHINES_DIR, 'machines.json'), 'utf8');
   return JSON.parse(data);
+}
+
+export function getConfigDir(machine: Machine): string {
+  const slicerFolder = machine.slicer === 'bambustudio' ? 'bambustudio' : 'orcaslicer';
+  return path.join(MACHINES_DIR, machine.id, slicerFolder);
 }
 
 export function walkDir(dir: string, base: string = dir): string[] {

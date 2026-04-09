@@ -11,6 +11,7 @@
     "buildVolume": "350 × 350 × 350 mm",
     "extruder": "LGX",
     "accent": "#EAB308",
+    "slicer": "orcaslicer",
     "hasGuide": true,
     "hasConfig": true
   },
@@ -26,7 +27,24 @@
     "buildVolume": "350 × 350 × 350 mm",
     "extruder": "CW2",
     "accent": "#9CA3AF",
+    "slicer": "orcaslicer",
     "hasGuide": true,
+    "hasConfig": true
+  },
+  {
+    "id": "H2C",
+    "name": "H2C",
+    "brand": "Bambu Lab",
+    "model": "Bambu Lab H2C",
+    "type": "CoreXY",
+    "description": "Bambu Lab H2C high-speed enclosed CoreXY. Configs for Bambu Studio.",
+    "tags": ["CoreXY", "Bambu Studio", "Enclosed"],
+    "nozzle": "0.2 / 0.4 / 0.6mm",
+    "buildVolume": "256 × 256 × 256 mm",
+    "extruder": "Dual",
+    "accent": "#4B5563",
+    "slicer": "bambustudio",
+    "hasGuide": false,
     "hasConfig": true
   }
 ]

@@ -122,8 +122,11 @@ export function MachineModal({ machine, onClose }: { machine: Machine; onClose: 
             <TabsContent value="install">
               <div className="space-y-4">
                 <p className="text-sm text-zinc-400">
-                  Download and run the installer to copy OrcaSlicer configs directly into the
-                  correct folders. OrcaSlicer must be installed first.
+                  Download and run the installer to copy configs directly into the correct folders.{' '}
+                  <span className="text-zinc-300">
+                    {machine.slicer === 'bambustudio' ? 'Bambu Studio' : 'OrcaSlicer'}
+                  </span>{' '}
+                  must be installed first.
                 </p>
 
                 {/* OS picker */}
