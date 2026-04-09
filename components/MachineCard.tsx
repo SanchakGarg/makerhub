@@ -36,7 +36,12 @@ export function MachineCard({ machine, onClick }: { machine: Machine; onClick: (
             <p className="text-sm text-muted-foreground mb-4">{machine.description}</p>
             <div className="flex flex-wrap gap-1.5">
               {machine.tags.map((tag) => (
-                <Badge key={tag} variant="outline" className="text-xs text-muted-foreground">
+                <Badge
+                  key={tag}
+                  variant="outline"
+                  className="text-xs"
+                  style={{ color: machine.accent, borderColor: machine.accent + '55', backgroundColor: machine.accent + '11' }}
+                >
                   {tag}
                 </Badge>
               ))}
