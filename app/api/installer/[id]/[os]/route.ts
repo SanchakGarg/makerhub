@@ -1,12 +1,12 @@
 import { NextResponse } from 'next/server';
 import path from 'path';
 import fs from 'fs';
-import { getMachines, getConfigDir, walkDir, Machine } from '@/lib/machines';
+import { getMachines, getConfigDir, getSystemConfigDir, walkDir, Machine } from '@/lib/machines';
 
 // ── OrcaSlicer generators ─────────────────────────────────────────────────
 
-function generateOrcaWindows(machine: Machine, relFiles: string[], serverUrl: string) {
-  const psLines = relFiles
+function generateOrcaWindows(machine: Machine, relFiles: string[], serverUrl: string, sysFiles: string[] = []) {
+  const userLines = relFiles
     .map((rel) => {
       const encodedRel = rel.split('/').map(encodeURIComponent).join('/');
       const url = `${serverUrl}/api/configs/${machine.id}/${encodedRel}`;
@@ -15,7 +15,17 @@ function generateOrcaWindows(machine: Machine, relFiles: string[], serverUrl: st
     })
     .join('\n');
 
-  const ps = `$orca = "$env:APPDATA\\OrcaSlicer\\user\\default"
+  const sysLines = sysFiles
+    .map((rel) => {
+      const encodedRel = rel.split('/').map(encodeURIComponent).join('/');
+      const url = `${serverUrl}/api/system-configs/${machine.id}/${encodedRel}`;
+      const dest = `$orcaSys\\${rel.replace(/\//g, '\\')}`;
+      return `  dl '${url}' "${dest}"`;
+    })
+    .join('\n');
+
+  const ps = `$orca    = "$env:APPDATA\\OrcaSlicer\\user\\default"
+$orcaSys = "$env:APPDATA\\OrcaSlicer\\system"
 
 function dl($url, $dest) {
   $dir = Split-Path $dest -Parent
@@ -42,10 +52,16 @@ if (-not (Test-Path $orca)) {
   exit 1
 }
 
-Write-Host "  Installing configs..."
+${sysLines.length > 0 ? `Write-Host "  Installing system configs..."
 Write-Host ""
 
-${psLines}
+${sysLines}
+
+Write-Host ""` : ''}
+Write-Host "  Installing user configs..."
+Write-Host ""
+
+${userLines}
 
 Write-Host ""
 Write-Host "  =============================================="
@@ -59,13 +75,35 @@ Read-Host "Press Enter to close"
   return `@echo off\ntitle MakerHub — ${machine.id} Installer\npowershell -NoProfile -ExecutionPolicy Bypass -EncodedCommand ${b64}\n`;
 }
 
-function generateOrcaUnix(machine: Machine, relFiles: string[], serverUrl: string, os: string) {
+function generateOrcaUnix(machine: Machine, relFiles: string[], serverUrl: string, os: string, sysFiles: string[] = []) {
   const orcaDir =
     os === 'mac'
       ? '$HOME/Library/Application Support/OrcaSlicer/user/default'
       : '$HOME/.config/OrcaSlicer/user/default';
 
-  const downloads = relFiles
+  const orcaSysDir =
+    os === 'mac'
+      ? '$HOME/Library/Application Support/OrcaSlicer/system'
+      : '$HOME/.config/OrcaSlicer/system';
+
+  const sysDownloads = sysFiles
+    .map((rel) => {
+      const encodedRel = rel.split('/').map(encodeURIComponent).join('/');
+      const url = `${serverUrl}/api/system-configs/${machine.id}/${encodedRel}`;
+      const dest = `${orcaSysDir}/${rel}`;
+      const dir = dest.substring(0, dest.lastIndexOf('/'));
+      return [
+        `  mkdir -p "${dir}"`,
+        `  if curl -fsSL "${url}" -o "${dest}"; then`,
+        `    echo "  OK  $(basename '${dest}')"`,
+        `  else`,
+        `    echo "  FAIL $(basename '${dest}')"`,
+        `  fi`,
+      ].join('\n');
+    })
+    .join('\n\n');
+
+  const userDownloads = relFiles
     .map((rel) => {
       const encodedRel = rel.split('/').map(encodeURIComponent).join('/');
       const url = `${serverUrl}/api/configs/${machine.id}/${encodedRel}`;
@@ -96,16 +134,22 @@ echo "  =============================================="
 echo ""
 
 if [ ! -d "$ORCA" ]; then
-  echo "  ERROR: OrcaSlicer not found at \$ORCA"
+  echo "  ERROR: OrcaSlicer not found at $ORCA"
   echo "  Please install OrcaSlicer first."
   read -rp "Press Enter to exit..."
   exit 1
 fi
 
-echo "  Installing configs..."
+${sysDownloads.length > 0 ? `echo "  Installing system configs..."
 echo ""
 
-${downloads}
+${sysDownloads}
+
+echo ""` : ''}
+echo "  Installing user configs..."
+echo ""
+
+${userDownloads}
 
 echo ""
 echo "  =============================================="
@@ -261,6 +305,9 @@ export async function GET(
   }
 
   const relFiles = walkDir(configDir);
+  const sysDir = getSystemConfigDir(machine);
+  const sysFiles = machine.hasSystemConfig && fs.existsSync(sysDir) ? walkDir(sysDir) : [];
+
   const serverUrl =
     process.env.BASE_URL ||
     (() => {
@@ -275,17 +322,17 @@ export async function GET(
   if (os === 'windows') {
     content = isBambu
       ? generateBambuWindows(machine, relFiles, serverUrl)
-      : generateOrcaWindows(machine, relFiles, serverUrl);
+      : generateOrcaWindows(machine, relFiles, serverUrl, sysFiles);
     filename = `install-${id}.bat`;
   } else if (os === 'mac') {
     content = isBambu
       ? generateBambuUnix(machine, relFiles, serverUrl, 'mac')
-      : generateOrcaUnix(machine, relFiles, serverUrl, 'mac');
+      : generateOrcaUnix(machine, relFiles, serverUrl, 'mac', sysFiles);
     filename = `install-${id}.command`;
   } else {
     content = isBambu
       ? generateBambuUnix(machine, relFiles, serverUrl, 'linux')
-      : generateOrcaUnix(machine, relFiles, serverUrl, 'linux');
+      : generateOrcaUnix(machine, relFiles, serverUrl, 'linux', sysFiles);
     filename = `install-${id}.sh`;
   }
 

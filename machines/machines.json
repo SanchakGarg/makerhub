@@ -42,8 +42,9 @@
     "nozzle": "0.4mm",
     "buildVolume": "320 × 320 × 320 mm",
     "extruder": "Single",
-    "accent": "#F97316",
+    "accent": "#FFFFFF",
     "slicer": "orcaslicer",
+    "hasSystemConfig": true,
     "hasGuide": false,
     "hasConfig": true
   },

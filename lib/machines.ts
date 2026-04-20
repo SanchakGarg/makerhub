@@ -16,6 +16,7 @@ export interface Machine {
   extruder: string;
   accent: string;
   slicer: 'orcaslicer' | 'bambustudio';
+  hasSystemConfig?: boolean;
   hasGuide: boolean;
   hasConfig: boolean;
 }
@@ -28,6 +29,10 @@ export function getMachines(): Machine[] {
 export function getConfigDir(machine: Machine): string {
   const slicerFolder = machine.slicer === 'bambustudio' ? 'bambustudio' : 'orcaslicer';
   return path.join(MACHINES_DIR, machine.id, slicerFolder);
+}
+
+export function getSystemConfigDir(machine: Machine): string {
+  return path.join(MACHINES_DIR, machine.id, 'orcaslicer-system');
 }
 
 export function walkDir(dir: string, base: string = dir): string[] {
