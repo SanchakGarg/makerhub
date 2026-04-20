@@ -32,6 +32,22 @@
     "hasConfig": true
   },
   {
+    "id": "EVA",
+    "name": "Eva",
+    "brand": "Snapmaker",
+    "model": "Snapmaker U1",
+    "type": "CoreXY",
+    "description": "Snapmaker U1 running OrcaSlicer.",
+    "tags": ["CoreXY", "OrcaSlicer", "Enclosed"],
+    "nozzle": "0.4mm",
+    "buildVolume": "320 × 320 × 320 mm",
+    "extruder": "Single",
+    "accent": "#F97316",
+    "slicer": "orcaslicer",
+    "hasGuide": false,
+    "hasConfig": true
+  },
+  {
     "id": "H2C",
     "name": "Ava",
     "brand": "Bambu Lab",

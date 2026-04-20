@@ -1,0 +1,9 @@
+{
+    "from": "User",
+    "inherits": "Snapmaker U1 (0.4 nozzle)",
+    "is_custom_defined": "0",
+    "name": "EVA - Snapmaker U1",
+    "print_host": "http://192.168.30.14",
+    "printer_settings_id": "EVA - Snapmaker U1",
+    "version": "2.3.1.10"
+}
