@@ -150,7 +150,7 @@
     "parking_pos_retraction": "92",
     "pellet_modded_printer": "0",
     "preferred_orientation": "0",
-    "print_host": "http://192.168.2.156",
+    "print_host": "http://192.168.30.126",
     "print_host_webui": "",
     "printable_area": [
         "0x0",

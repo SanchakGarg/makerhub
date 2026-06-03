@@ -1,22 +1,24 @@
-# Aden — Setup Guide
+﻿# Aden — Setup Guide
 
 ## Overview
 
-Aden is a Voron 2.4 r2 with a CW2 (Clockwork 2) extruder, running Klipper firmware. Fully enclosed CoreXY printer.
+Aden is a Voron 2.4 r2 with a CW2 (Clockwork 2) extruder, running Klipper firmware. Fully enclosed CoreXY, great for ABS, ASA, and engineering materials.
 
 ## OrcaSlicer Setup
 
 Install the configs using MakerHub, then in OrcaSlicer:
 
 1. Select **Aden - Voron 2 r2 0.4 nozzle** as your machine
-2. Choose a **V2 - CW2 @Aden** filament profile matching your material
+2. Choose a **V2 - CW2** filament profile matching your material and colour
 3. Use **0.20mm Standard @Aden** as your starting process profile
 
 ## Materials
 
 | Material | Profile | Notes |
 |----------|---------|-------|
-| ABS+ | V2 - CW2 @Aden eSun ABS+ | Keep enclosure closed. |
+| ABS+ | V2 - CW2 eSun ABS+ | Recommended. Keep enclosure closed. |
+| PLA+ | V2 - CW2 eSun PLA+ | Open door for cooling if needed. |
+| PETG | V2 - CW2 eSun PETG | Keep enclosure closed. |
 
 ## Starting a Print
 
@@ -24,6 +26,10 @@ Install the configs using MakerHub, then in OrcaSlicer:
 2. Run **Bed Mesh Calibrate** before first print of the day
 3. Load filament through the CW2 extruder
 4. Start print from OrcaSlicer or Fluidd
+
+## Known Issues
+
+- Update this section with any quirks specific to Aden.
 
 ## Maintenance
 
