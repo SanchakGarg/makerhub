@@ -1,6 +1,7 @@
 import { Machine } from '@/lib/machines';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { withAlpha } from '@/lib/color';
 
 export function MachineCard({ machine, onClick }: { machine: Machine; onClick: () => void }) {
   return (
@@ -28,7 +29,7 @@ export function MachineCard({ machine, onClick }: { machine: Machine; onClick: (
               </h2>
               <span
                 className="text-xs font-mono px-2 py-0.5 rounded-full border"
-                style={{ color: machine.accent, borderColor: machine.accent + '55' }}
+                style={{ color: machine.accent, borderColor: withAlpha(machine.accent, '55') }}
               >
                 {machine.extruder}
               </span>
@@ -40,7 +41,7 @@ export function MachineCard({ machine, onClick }: { machine: Machine; onClick: (
                   key={tag}
                   variant="outline"
                   className="text-xs h-auto overflow-visible whitespace-normal"
-                  style={{ color: machine.accent, borderColor: machine.accent + '55', backgroundColor: machine.accent + '11' }}
+                  style={{ color: machine.accent, borderColor: withAlpha(machine.accent, '55'), backgroundColor: withAlpha(machine.accent, '11') }}
                 >
                   {tag}
                 </Badge>

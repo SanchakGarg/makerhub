@@ -9,4 +9,5 @@ services:
       - PORT=3000
     volumes:
       - ./machines:/app/machines
+      - ./data:/app/data
     restart: unless-stopped

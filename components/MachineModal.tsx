@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Machine } from '@/lib/machines';
+import { Machine, SLICER_LABEL } from '@/lib/machines';
 import {
   Dialog,
   DialogContent,
@@ -9,11 +9,14 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
-import { Copy } from 'lucide-react';
+import { Copy, Pencil } from 'lucide-react';
+import { withAlpha, readableInk } from '@/lib/color';
+import { useAuth } from '@/components/AuthProvider';
+import { ConfigManager } from '@/components/admin/ConfigManager';
+import { EditPrinterDialog } from '@/components/admin/EditPrinterDialog';
 
 function CopyBox({ command }: { command: string }) {
   const copy = () => {
@@ -54,9 +57,19 @@ const OS_OPTIONS = [
 
 type OS = (typeof OS_OPTIONS)[number]['key'];
 
-export function MachineModal({ machine, onClose }: { machine: Machine; onClose: () => void }) {
+export function MachineModal({
+  machine,
+  onClose,
+  onChanged,
+}: {
+  machine: Machine;
+  onClose: () => void;
+  onChanged?: () => void;
+}) {
+  const { isAuthenticated } = useAuth();
   const [guideHtml, setGuideHtml] = useState('');
   const [selectedOs, setSelectedOs] = useState<OS>('windows');
+  const [editOpen, setEditOpen] = useState(false);
 
   useEffect(() => {
     fetch(`/api/machines/${machine.id}/guide`)
@@ -68,7 +81,8 @@ export function MachineModal({ machine, onClose }: { machine: Machine; onClose: 
   const osOption = OS_OPTIONS.find((o) => o.key === selectedOs)!;
   const downloadUrl = `/api/installer/${machine.id}/${selectedOs}`;
   const filename = `install-${machine.id}${osOption.ext}`;
-  const slicerName = machine.slicer === 'bambustudio' ? 'Bambu Studio' : 'OrcaSlicer';
+  const slicerName = SLICER_LABEL[machine.slicer];
+  const accentInk = readableInk(machine.accent);
 
   return (
     <Dialog open onOpenChange={(open) => !open && onClose()}>
@@ -84,10 +98,21 @@ export function MachineModal({ machine, onClose }: { machine: Machine; onClose: 
               </DialogTitle>
               <span
                 className="text-xs font-mono px-2 py-0.5 rounded-full border"
-                style={{ color: machine.accent, borderColor: machine.accent + '55' }}
+                style={{ color: machine.accent, borderColor: withAlpha(machine.accent, '55') }}
               >
                 {machine.extruder}
               </span>
+              {isAuthenticated && (
+                <Button
+                  variant="ghost"
+                  size="icon-sm"
+                  className="ml-auto text-muted-foreground hover:text-foreground"
+                  onClick={() => setEditOpen(true)}
+                  title="Edit printer"
+                >
+                  <Pencil className="h-3.5 w-3.5" />
+                </Button>
+              )}
             </div>
             <p className="text-sm text-muted-foreground">{machine.description}</p>
           </DialogHeader>
@@ -115,6 +140,7 @@ export function MachineModal({ machine, onClose }: { machine: Machine; onClose: 
             <TabsList className="mb-4">
               <TabsTrigger value="install">Install</TabsTrigger>
               <TabsTrigger value="guide">Setup Guide</TabsTrigger>
+              {isAuthenticated && <TabsTrigger value="manage">Manage</TabsTrigger>}
             </TabsList>
 
             <TabsContent value="install">
@@ -133,10 +159,10 @@ export function MachineModal({ machine, onClose }: { machine: Machine; onClose: 
                       onClick={() => setSelectedOs(os.key)}
                       className={`px-4 py-2 rounded-md text-sm font-medium border transition-colors ${
                         selectedOs === os.key
-                          ? 'border-transparent text-black'
+                          ? 'border-transparent'
                           : 'border-border text-muted-foreground hover:text-foreground hover:border-muted-foreground/40'
                       }`}
-                      style={selectedOs === os.key ? { backgroundColor: machine.accent } : undefined}
+                      style={selectedOs === os.key ? { backgroundColor: machine.accent, color: accentInk } : undefined}
                     >
                       {os.label}
                     </button>
@@ -145,7 +171,7 @@ export function MachineModal({ machine, onClose }: { machine: Machine; onClose: 
 
                 {/* Download button */}
                 <a href={downloadUrl} download={filename}>
-                  <Button className="w-full font-semibold text-black" style={{ backgroundColor: machine.accent }}>
+                  <Button className="w-full font-semibold" style={{ backgroundColor: machine.accent, color: accentInk }}>
                     Download {filename}
                   </Button>
                 </a>
@@ -200,9 +226,24 @@ export function MachineModal({ machine, onClose }: { machine: Machine; onClose: 
                 <p className="text-sm text-muted-foreground">Loading guide…</p>
               )}
             </TabsContent>
+
+            {isAuthenticated && (
+              <TabsContent value="manage">
+                <ConfigManager machine={machine} onChanged={onChanged} />
+              </TabsContent>
+            )}
           </Tabs>
         </div>
       </DialogContent>
+
+      {isAuthenticated && (
+        <EditPrinterDialog
+          machine={machine}
+          open={editOpen}
+          onOpenChange={setEditOpen}
+          onSaved={onChanged}
+        />
+      )}
     </Dialog>
   );
 }

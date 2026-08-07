@@ -20,6 +20,10 @@
 # production
 /build
 
+# admin-written data (uploaded configs, printer edits) — kept out of git so
+# it never conflicts with machines/ during `git pull` in update.sh
+/data/
+
 # misc
 .DS_Store
 *.pem

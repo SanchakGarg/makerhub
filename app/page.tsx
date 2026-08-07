@@ -1,6 +1,11 @@
-import { getMachines } from '@/lib/machines';
+import { getMachines } from '@/lib/storage';
 import { MachineGrid } from '@/components/MachineGrid';
 import { ThemeToggle } from '@/components/ThemeToggle';
+import { AuthButton } from '@/components/AuthButton';
+
+// machines/ + data/ are read from disk on every request (admin edits must be
+// visible immediately, not only after a rebuild).
+export const dynamic = 'force-dynamic';
 
 export default function Home() {
   const machines = getMachines();
@@ -15,7 +20,10 @@ export default function Home() {
             Select a printer to view its setup guide and download slicer configs.
           </p>
         </div>
-        <ThemeToggle />
+        <div className="flex items-center gap-1">
+          <AuthButton />
+          <ThemeToggle />
+        </div>
       </div>
       <MachineGrid machines={machines} />
     </main>

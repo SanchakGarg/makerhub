@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server';
-import { getMachines } from '@/lib/machines';
+import { getMachines } from '@/lib/storage';
+
+export const dynamic = 'force-dynamic';
 
 export function GET() {
   try {

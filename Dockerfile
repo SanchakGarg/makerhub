@@ -23,6 +23,11 @@ COPY --from=builder /app/public ./public
 # Machine configs must be available at runtime
 COPY --from=builder /app/machines ./machines
 
+# Admin-written data (uploaded configs, printer edits) — normally shadowed by
+# the ./data bind mount in docker-compose.yml, but present so the image also
+# works standalone (docker run, no compose).
+RUN mkdir -p /app/data
+
 EXPOSE 3000
 
 CMD ["bun", "server.js"]

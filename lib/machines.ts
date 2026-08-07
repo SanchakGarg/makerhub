@@ -1,7 +1,26 @@
-import fs from 'fs';
-import path from 'path';
+// Client-safe: no fs/path imports here, so client components can import
+// types and constants without pulling lib/storage.ts (and its Node 'fs'
+// dependency) into the browser bundle. lib/storage.ts imports from this
+// file, never the other way around.
 
-export const MACHINES_DIR = path.join(process.cwd(), 'machines');
+export const SLICERS = ['orcaslicer', 'snapmaker-orcaslicer', 'bambustudio'] as const;
+export type Slicer = (typeof SLICERS)[number];
+
+export const SLICER_LABEL: Record<Slicer, string> = {
+  orcaslicer: 'OrcaSlicer',
+  'snapmaker-orcaslicer': 'Snapmaker Orca',
+  bambustudio: 'Bambu Studio',
+};
+
+// Folder name is decoupled from the slicer id: retagging a machine's slicer
+// (e.g. if EVA moves to the Snapmaker fork) never requires moving files on disk.
+export const SLICER_FOLDER: Record<Slicer, string> = {
+  orcaslicer: 'orcaslicer',
+  'snapmaker-orcaslicer': 'orcaslicer',
+  bambustudio: 'bambustudio',
+};
+
+export type Layer = 'seed' | 'overlay';
 
 export interface Machine {
   id: string;
@@ -15,36 +34,8 @@ export interface Machine {
   buildVolume: string;
   extruder: string;
   accent: string;
-  slicer: 'orcaslicer' | 'bambustudio';
+  slicer: Slicer;
   hasSystemConfig?: boolean;
   hasGuide: boolean;
   hasConfig: boolean;
-}
-
-export function getMachines(): Machine[] {
-  const data = fs.readFileSync(path.join(MACHINES_DIR, 'machines.json'), 'utf8');
-  return JSON.parse(data);
-}
-
-export function getConfigDir(machine: Machine): string {
-  const slicerFolder = machine.slicer === 'bambustudio' ? 'bambustudio' : 'orcaslicer';
-  return path.join(MACHINES_DIR, machine.id, slicerFolder);
-}
-
-export function getSystemConfigDir(machine: Machine): string {
-  return path.join(MACHINES_DIR, machine.id, 'orcaslicer-system');
-}
-
-export function walkDir(dir: string, base: string = dir): string[] {
-  const results: string[] = [];
-  if (!fs.existsSync(dir)) return results;
-  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
-    const full = path.join(dir, entry.name);
-    if (entry.isDirectory()) {
-      results.push(...walkDir(full, base));
-    } else {
-      results.push(path.relative(base, full).replace(/\\/g, '/'));
-    }
-  }
-  return results;
 }

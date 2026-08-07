@@ -18,6 +18,8 @@ if ! docker compose version &>/dev/null; then
   exit 1
 fi
 
+mkdir -p ./data
+
 # Copy .env if it doesn't exist
 if [ ! -f .env ]; then
   cp .env.example .env

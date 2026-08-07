@@ -1,27 +1,27 @@
 import { NextResponse } from 'next/server';
-import fs from 'fs';
-import path from 'path';
-import { getMachines, getSystemConfigDir } from '@/lib/machines';
+import { getMachineById, readSystemConfigFile } from '@/lib/storage';
+
+export const dynamic = 'force-dynamic';
 
 export async function GET(
   _req: Request,
   { params }: { params: Promise<{ id: string; path: string[] }> }
 ) {
   const { id, path: segments } = await params;
-  const machines = getMachines();
-  const machine = machines.find((m) => m.id === id);
+  const machine = getMachineById(id);
   if (!machine) return new NextResponse('Machine not found', { status: 404 });
 
-  const rel = segments.join('/');
-  const safe = path.normalize(rel).replace(/^(\.\.(\/|\\|$))+/, '');
-  const file = path.join(getSystemConfigDir(machine), safe);
-
-  if (!fs.existsSync(file)) {
+  let content: Buffer | null;
+  try {
+    content = readSystemConfigFile(machine, segments.join('/'));
+  } catch {
+    return new NextResponse('Not found', { status: 404 });
+  }
+  if (content === null) {
     return new NextResponse('Not found', { status: 404 });
   }
 
-  const content = fs.readFileSync(file);
-  return new NextResponse(content, {
+  return new NextResponse(new Uint8Array(content), {
     headers: { 'Content-Type': 'application/octet-stream' },
   });
 }

@@ -26,6 +26,8 @@ echo "  [2/3] Pulling latest changes..."
 git pull
 
 echo ""
+mkdir -p ./data
+
 echo "  [3/3] Rebuilding and starting MakerHub..."
 docker compose up --build -d
 
