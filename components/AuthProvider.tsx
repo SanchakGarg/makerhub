@@ -13,7 +13,6 @@ interface AuthContextValue {
   user: SessionUser | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  devBypass: boolean;
   login: (returnTo?: string) => void;
   logout: () => void;
   refresh: () => Promise<void>;
@@ -27,17 +26,14 @@ const MUTATING = new Set(['POST', 'PUT', 'PATCH', 'DELETE']);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<SessionUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [devBypass, setDevBypass] = useState(false);
 
   const refresh = useCallback(async () => {
     try {
       const res = await fetch('/api/auth/session', { cache: 'no-store' });
       const data = await res.json();
       setUser(data.authenticated ? data.user : null);
-      setDevBypass(Boolean(data.devBypass));
     } catch {
       setUser(null);
-      setDevBypass(false);
     } finally {
       setIsLoading(false);
     }
@@ -76,7 +72,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <AuthContext.Provider
-      value={{ user, isAuthenticated: user !== null, isLoading, devBypass, login, logout, refresh, apiFetch }}
+      value={{ user, isAuthenticated: user !== null, isLoading, login, logout, refresh, apiFetch }}
     >
       {children}
     </AuthContext.Provider>

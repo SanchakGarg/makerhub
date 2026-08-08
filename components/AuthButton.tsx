@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { useAuth } from '@/components/AuthProvider';
 
 export function AuthButton() {
-  const { user, isAuthenticated, isLoading, devBypass, login, logout } = useAuth();
+  const { user, isAuthenticated, isLoading, login, logout } = useAuth();
 
   if (isLoading) return <div className="w-9 h-9" />;
 
@@ -21,18 +21,6 @@ export function AuthButton() {
       >
         <LogIn className="h-4 w-4" />
       </Button>
-    );
-  }
-
-  if (devBypass) {
-    return (
-      <span
-        className="flex items-center justify-center w-9 h-9 text-amber-500"
-        title="DEV BYPASS — auth is disabled, do not use in production"
-        aria-label="DEV BYPASS — auth is disabled"
-      >
-        <ShieldCheck className="h-4 w-4" />
-      </span>
     );
   }
 
