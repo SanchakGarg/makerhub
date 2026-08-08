@@ -36,6 +36,10 @@ export interface Machine {
   accent: string;
   slicer: Slicer;
   hasSystemConfig?: boolean;
+  /** Id of another machine whose orcaslicer-system folder this one reads from
+   *  instead of its own — set when this printer has no vendor bundle of its
+   *  own and shares a sibling's. */
+  inheritsSystemConfigFrom?: string;
   hasGuide: boolean;
   hasConfig: boolean;
 }

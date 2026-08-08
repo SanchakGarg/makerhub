@@ -1,6 +1,6 @@
 import { revalidatePath } from 'next/cache';
 import { SLICERS, type Slicer, type Machine } from '@/lib/machines';
-import { getMachineById, patchMachine, deleteMachine } from '@/lib/storage';
+import { getMachines, getMachineById, patchMachine, deleteMachine } from '@/lib/storage';
 import { normalizeHex } from '@/lib/color';
 import { guard, ok, fail } from '@/lib/api';
 
@@ -18,6 +18,7 @@ const EDITABLE_FIELDS = [
   'extruder',
   'accent',
   'slicer',
+  'inheritsSystemConfigFrom',
 ] as const;
 
 function validatePatch(body: unknown): { ok: true; patch: Partial<Machine> } | { ok: false; reason: string } {
@@ -57,6 +58,12 @@ function validatePatch(body: unknown): { ok: true; patch: Partial<Machine> } | {
       patch[key] = b[key] as string;
     }
   }
+  if ('inheritsSystemConfigFrom' in b) {
+    if (typeof b.inheritsSystemConfigFrom !== 'string') {
+      return { ok: false, reason: 'inheritsSystemConfigFrom must be a string.' };
+    }
+    patch.inheritsSystemConfigFrom = b.inheritsSystemConfigFrom.trim() || undefined;
+  }
 
   return { ok: true, patch };
 }
@@ -78,6 +85,16 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
 
   const validated = validatePatch(body);
   if (!validated.ok) return fail(400, 'invalid_patch', validated.reason);
+
+  if (validated.patch.inheritsSystemConfigFrom) {
+    const target = validated.patch.inheritsSystemConfigFrom;
+    if (target === id) {
+      return fail(400, 'invalid_inherit', 'A printer cannot inherit system config from itself.');
+    }
+    if (!getMachines().some((m) => m.id === target)) {
+      return fail(400, 'invalid_inherit', `No printer with id "${target}" exists to inherit system config from.`);
+    }
+  }
 
   const updated = await patchMachine(id, validated.patch);
   revalidatePath('/');

@@ -224,11 +224,12 @@ export function fileLayer(rel: string): Layer | null {
 
 function withDerivedFlags(m: Machine): Machine {
   const slicerFolder = SLICER_FOLDER[m.slicer] ?? 'orcaslicer';
+  const systemOwnerId = m.inheritsSystemConfigFrom || m.id;
   return {
     ...m,
     hasGuide: existsMerged(`${m.id}/guide.md`),
     hasConfig: dirExistsMerged(`${m.id}/${slicerFolder}`),
-    hasSystemConfig: dirExistsMerged(`${m.id}/orcaslicer-system`),
+    hasSystemConfig: dirExistsMerged(`${systemOwnerId}/orcaslicer-system`),
   };
 }
 
@@ -256,7 +257,7 @@ export function getMachineById(id: string): Machine | null {
 }
 
 export function machineLayerDir(m: Machine, layer: 'user' | 'system'): string {
-  if (layer === 'system') return `${m.id}/orcaslicer-system`;
+  if (layer === 'system') return `${m.inheritsSystemConfigFrom || m.id}/orcaslicer-system`;
   return `${m.id}/${SLICER_FOLDER[m.slicer] ?? 'orcaslicer'}`;
 }
 

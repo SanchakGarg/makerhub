@@ -27,6 +27,7 @@ interface NewMachineInput {
   extruder: string;
   accent: string;
   slicer: Slicer;
+  inheritsSystemConfigFrom?: string;
 }
 
 function validateInput(body: unknown): { ok: true; input: NewMachineInput } | { ok: false; reason: string } {
@@ -51,6 +52,9 @@ function validateInput(body: unknown): { ok: true; input: NewMachineInput } | { 
   if (b.id !== undefined && typeof b.id !== 'string') {
     return { ok: false, reason: 'id must be a string.' };
   }
+  if (b.inheritsSystemConfigFrom !== undefined && typeof b.inheritsSystemConfigFrom !== 'string') {
+    return { ok: false, reason: 'inheritsSystemConfigFrom must be a string.' };
+  }
 
   return {
     ok: true,
@@ -67,6 +71,7 @@ function validateInput(body: unknown): { ok: true; input: NewMachineInput } | { 
       extruder: b.extruder as string,
       accent,
       slicer: b.slicer as Slicer,
+      inheritsSystemConfigFrom: (b.inheritsSystemConfigFrom as string | undefined)?.trim() || undefined,
     },
   };
 }
@@ -101,6 +106,19 @@ export async function POST(req: Request) {
   const id = input.id?.trim() || deriveMachineId(input.name);
   const idCheck = validateMachineId(id, existingIds);
   if (!idCheck.ok) return fail(400, 'invalid_id', idCheck.reason);
+
+  if (input.inheritsSystemConfigFrom) {
+    if (input.inheritsSystemConfigFrom === id) {
+      return fail(400, 'invalid_inherit', 'A printer cannot inherit system config from itself.');
+    }
+    if (!existingIds.includes(input.inheritsSystemConfigFrom)) {
+      return fail(
+        400,
+        'invalid_inherit',
+        `No printer with id "${input.inheritsSystemConfigFrom}" exists to inherit system config from.`
+      );
+    }
+  }
 
   const files = form.getAll('files').filter((f): f is File => f instanceof File);
 
@@ -209,6 +227,7 @@ export async function POST(req: Request) {
     extruder: input.extruder,
     accent: input.accent,
     slicer: input.slicer,
+    inheritsSystemConfigFrom: input.inheritsSystemConfigFrom,
     hasGuide: false,
     hasConfig: false,
   };

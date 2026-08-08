@@ -9,6 +9,7 @@ import {
   Loader2,
   Palette,
   Ruler,
+  Share2,
   Tag,
   UploadCloud,
   X,
@@ -17,6 +18,7 @@ import { SLICERS, SLICER_LABEL, type Machine, type Slicer } from '@/lib/machines
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { AccentPicker } from './AccentPicker';
 import { PrinterPreview } from './PrinterPreview';
@@ -40,6 +42,8 @@ interface FormValues {
   extruder: string;
   accent: string;
   slicer: Slicer;
+  inheritSystemConfig: boolean;
+  inheritsSystemConfigFrom: string;
 }
 
 function initialValues(machine?: Machine): FormValues {
@@ -56,6 +60,8 @@ function initialValues(machine?: Machine): FormValues {
       extruder: machine.extruder,
       accent: machine.accent,
       slicer: machine.slicer,
+      inheritSystemConfig: Boolean(machine.inheritsSystemConfigFrom),
+      inheritsSystemConfigFrom: machine.inheritsSystemConfigFrom ?? '',
     };
   }
   return {
@@ -71,6 +77,8 @@ function initialValues(machine?: Machine): FormValues {
     // A pre-picked colour beats black: most printers never get a deliberate one.
     accent: SWATCHES[Math.floor(Math.random() * SWATCHES.length)],
     slicer: 'orcaslicer',
+    inheritSystemConfig: false,
+    inheritsSystemConfigFrom: '',
   };
 }
 
@@ -109,6 +117,7 @@ export function PrinterForm({ machine, children }: { machine?: Machine; children
   const canSubmit =
     Boolean(form.name.trim()) &&
     Boolean(form.description.trim()) &&
+    (!form.inheritSystemConfig || Boolean(form.inheritsSystemConfigFrom.trim())) &&
     (isEdit ? dirty : files.length > 0) &&
     !saving;
 
@@ -137,6 +146,7 @@ export function PrinterForm({ machine, children }: { machine?: Machine; children
     extruder: form.extruder.trim() || 'Single',
     accent: form.accent,
     slicer: form.slicer,
+    inheritsSystemConfigFrom: form.inheritSystemConfig ? form.inheritsSystemConfigFrom.trim() : '',
   });
 
   const create = async () => {
@@ -410,6 +420,47 @@ export function PrinterForm({ machine, children }: { machine?: Machine; children
           <Field label="Accent colour">
             <AccentPicker value={form.accent} onChange={(hex) => set('accent', hex)} />
           </Field>
+        </Section>
+
+        <Section
+          icon={Share2}
+          title="System config"
+          description="Vendor-supplied filament/process bundles, shared across identical printers."
+        >
+          <label className="group/field flex items-start gap-2.5 text-sm">
+            <Checkbox
+              className="mt-0.5"
+              checked={form.inheritSystemConfig}
+              onCheckedChange={(checked) => {
+                set('inheritSystemConfig', checked);
+                if (!checked) set('inheritsSystemConfigFrom', '');
+              }}
+            />
+            <span>
+              Inherits system config from another printer
+              <span className="mt-0.5 block text-[11px] font-normal leading-snug text-muted-foreground">
+                Installs will pull the vendor system bundle from that printer&rsquo;s own folder instead of
+                expecting one here.
+              </span>
+            </span>
+          </label>
+
+          {form.inheritSystemConfig && (
+            <Field
+              id="pf-inherit-from"
+              label="Inherit from printer id"
+              required
+              hint="The exact id of the printer that owns the system config, e.g. “kiwi”."
+            >
+              <Input
+                id="pf-inherit-from"
+                className="h-9"
+                value={form.inheritsSystemConfigFrom}
+                onChange={(e) => set('inheritsSystemConfigFrom', e.target.value)}
+                placeholder="kiwi"
+              />
+            </Field>
+          )}
         </Section>
 
         {children}

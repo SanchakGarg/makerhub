@@ -167,6 +167,13 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
 
   const url = new URL(req.url);
   const tree = parseTree(url);
+  if (tree === 'system' && machine.inheritsSystemConfigFrom) {
+    return fail(
+      400,
+      'inherited_system_config',
+      `System config is inherited from "${machine.inheritsSystemConfigFrom}" — upload it on that printer instead.`
+    );
+  }
   if (tree === 'system' && !machine.hasSystemConfig) {
     return fail(400, 'no_system_tree', 'This machine has no system config tree.');
   }
