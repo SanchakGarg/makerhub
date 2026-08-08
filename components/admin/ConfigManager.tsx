@@ -261,7 +261,7 @@ export function ConfigManager({ machine, onChanged }: { machine: Machine; onChan
         </p>
       )}
 
-      <div className="max-h-72 overflow-y-auto border border-border rounded-md divide-y divide-border/50">
+      <div className="max-h-[26rem] overflow-y-auto border border-border rounded-md divide-y divide-border/50">
         {loading ? (
           <p className="text-sm text-muted-foreground p-3">Loading…</p>
         ) : files.length === 0 ? (

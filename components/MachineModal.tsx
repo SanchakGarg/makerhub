@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 import { Machine, SLICER_LABEL } from '@/lib/machines';
 import {
   Dialog,
@@ -12,11 +13,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
-import { Copy, Pencil } from 'lucide-react';
+import { Copy, Settings2 } from 'lucide-react';
 import { withAlpha, readableInk } from '@/lib/color';
 import { useAuth } from '@/components/AuthProvider';
-import { ConfigManager } from '@/components/admin/ConfigManager';
-import { EditPrinterDialog } from '@/components/admin/EditPrinterDialog';
 
 function CopyBox({ command }: { command: string }) {
   const copy = () => {
@@ -57,19 +56,10 @@ const OS_OPTIONS = [
 
 type OS = (typeof OS_OPTIONS)[number]['key'];
 
-export function MachineModal({
-  machine,
-  onClose,
-  onChanged,
-}: {
-  machine: Machine;
-  onClose: () => void;
-  onChanged?: () => void;
-}) {
+export function MachineModal({ machine, onClose }: { machine: Machine; onClose: () => void }) {
   const { isAuthenticated } = useAuth();
   const [guideHtml, setGuideHtml] = useState('');
   const [selectedOs, setSelectedOs] = useState<OS>('windows');
-  const [editOpen, setEditOpen] = useState(false);
 
   useEffect(() => {
     fetch(`/api/machines/${machine.id}/guide`)
@@ -105,12 +95,13 @@ export function MachineModal({
               {isAuthenticated && (
                 <Button
                   variant="ghost"
-                  size="icon-sm"
+                  size="sm"
                   className="ml-auto text-muted-foreground hover:text-foreground"
-                  onClick={() => setEditOpen(true)}
-                  title="Edit printer"
+                  title="Open admin settings for this printer"
+                  render={<Link href={`/admin/printers/${machine.id}`} />}
                 >
-                  <Pencil className="h-3.5 w-3.5" />
+                  <Settings2 className="h-3.5 w-3.5" />
+                  Manage
                 </Button>
               )}
             </div>
@@ -140,7 +131,6 @@ export function MachineModal({
             <TabsList className="mb-4">
               <TabsTrigger value="install">Install</TabsTrigger>
               <TabsTrigger value="guide">Setup Guide</TabsTrigger>
-              {isAuthenticated && <TabsTrigger value="manage">Manage</TabsTrigger>}
             </TabsList>
 
             <TabsContent value="install">
@@ -227,23 +217,9 @@ export function MachineModal({
               )}
             </TabsContent>
 
-            {isAuthenticated && (
-              <TabsContent value="manage">
-                <ConfigManager machine={machine} onChanged={onChanged} />
-              </TabsContent>
-            )}
           </Tabs>
         </div>
       </DialogContent>
-
-      {isAuthenticated && (
-        <EditPrinterDialog
-          machine={machine}
-          open={editOpen}
-          onOpenChange={setEditOpen}
-          onSaved={onChanged}
-        />
-      )}
     </Dialog>
   );
 }
