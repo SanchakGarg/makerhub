@@ -270,6 +270,26 @@ export function listSystemConfigFiles(m: Machine): string[] {
   return listMerged(machineLayerDir(m, 'system'));
 }
 
+/** Moves this machine's `machine/` category files between the bare and
+ *  `/base` convention, so toggling system-config inheritance on an existing
+ *  printer (edit page, not just create) actually relocates already-uploaded
+ *  files instead of leaving them stranded under the old convention. */
+export function relocateMachineCategoryFiles(m: Machine, inheriting: boolean): void {
+  const targetIsBase = !inheriting;
+  const rels = listConfigFiles(m).filter((rel) => rel.split('/')[0] === 'machine');
+  for (const rel of rels) {
+    const parts = rel.split('/');
+    const currentIsBase = parts[1] === 'base';
+    if (currentIsBase === targetIsBase) continue;
+    const filename = (currentIsBase ? parts.slice(2) : parts.slice(1)).join('/');
+    const newRel = targetIsBase ? `machine/base/${filename}` : `machine/${filename}`;
+    const buf = readConfigFile(m, rel);
+    if (buf === null) continue;
+    writeConfigFile(m, newRel, buf);
+    deleteConfigFile(m, rel);
+  }
+}
+
 export function readConfigFile(m: Machine, rel: string): Buffer | null {
   return readFileBuffer(`${machineLayerDir(m, 'user')}/${safeRel(rel)}`);
 }

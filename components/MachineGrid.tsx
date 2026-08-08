@@ -32,7 +32,7 @@ export function MachineGrid({ machines }: { machines: Machine[] }) {
         ))}
       </div>
 
-      {selected && <MachineModal machine={selected} onClose={() => setSelectedId(null)} />}
+      {selected && <MachineModal machine={selected} machines={machines} onClose={() => setSelectedId(null)} />}
     </>
   );
 }

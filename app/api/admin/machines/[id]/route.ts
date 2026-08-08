@@ -1,6 +1,6 @@
 import { revalidatePath } from 'next/cache';
 import { SLICERS, type Slicer, type Machine } from '@/lib/machines';
-import { getMachineById, patchMachine, deleteMachine } from '@/lib/storage';
+import { getMachineById, patchMachine, deleteMachine, relocateMachineCategoryFiles } from '@/lib/storage';
 import { normalizeHex } from '@/lib/color';
 import { guard, ok, fail } from '@/lib/api';
 
@@ -85,6 +85,14 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
 
   const validated = validatePatch(body);
   if (!validated.ok) return fail(400, 'invalid_patch', validated.reason);
+
+  if ('inheritsSystemConfigFrom' in validated.patch) {
+    const wasInheriting = Boolean(machine.inheritsSystemConfigFrom);
+    const willInherit = Boolean(validated.patch.inheritsSystemConfigFrom);
+    if (wasInheriting !== willInherit) {
+      relocateMachineCategoryFiles(machine, willInherit);
+    }
+  }
 
   const updated = await patchMachine(id, validated.patch);
   revalidatePath('/');
