@@ -185,7 +185,10 @@ export async function POST(req: Request) {
       continue;
     }
 
-    const guess = inferSlot(o, file.name, true) ?? { category: 'filament' as Category, isBase: false };
+    const guess = inferSlot(o, file.name, !input.inheritsSystemConfigFrom) ?? {
+      category: 'filament' as Category,
+      isBase: false,
+    };
     const destDir = `${guess.category}${guess.isBase ? '/base' : ''}`;
     toWrite.push({ rel: `${destDir}/${nameCheck.name}`, buf });
 
