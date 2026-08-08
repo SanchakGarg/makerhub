@@ -2,17 +2,22 @@ import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { verifyAccessToken } from '@/lib/auth/oidc';
 import { AT_COOKIE, userFromClaims } from '@/lib/auth/session';
+import { devBypassEnabled, DEV_BYPASS_USER } from '@/lib/auth/dev-bypass';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET() {
-  const token = (await cookies()).get(AT_COOKIE)?.value;
   const res = (body: object) => {
     const r = NextResponse.json(body);
     r.headers.set('Cache-Control', 'no-store');
     return r;
   };
 
+  if (devBypassEnabled()) {
+    return res({ authenticated: true, user: DEV_BYPASS_USER, expiresAt: null, devBypass: true });
+  }
+
+  const token = (await cookies()).get(AT_COOKIE)?.value;
   if (!token) return res({ authenticated: false });
 
   try {

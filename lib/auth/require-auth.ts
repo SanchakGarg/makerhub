@@ -3,6 +3,7 @@ import { cookies } from 'next/headers';
 import type { JWTPayload } from 'jose';
 import { verifyAccessToken, NotAJwtError } from './oidc';
 import { AT_COOKIE, userFromClaims, type SessionUser } from './session';
+import { devBypassEnabled, DEV_BYPASS_USER } from './dev-bypass';
 
 export interface AuthContext {
   user: SessionUser;
@@ -31,6 +32,10 @@ function originIsAllowed(req: Request): boolean {
  * Zitadel (grant the app to whoever should have it), not in this app.
  */
 export async function requireAuth(req: Request): Promise<AuthResult> {
+  if (devBypassEnabled()) {
+    return { ok: true, auth: { user: DEV_BYPASS_USER, claims: { sub: DEV_BYPASS_USER.sub } } };
+  }
+
   if (MUTATING_METHODS.has(req.method)) {
     if (!originIsAllowed(req)) {
       return { ok: false, response: NextResponse.json({ error: 'bad_origin' }, { status: 403 }) };
