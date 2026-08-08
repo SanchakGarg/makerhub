@@ -1,6 +1,6 @@
 import { revalidatePath } from 'next/cache';
 import { SLICERS, type Slicer, type Machine } from '@/lib/machines';
-import { getMachines, getMachineById, patchMachine, deleteMachine } from '@/lib/storage';
+import { getMachineById, patchMachine, deleteMachine } from '@/lib/storage';
 import { normalizeHex } from '@/lib/color';
 import { guard, ok, fail } from '@/lib/api';
 
@@ -85,16 +85,6 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
 
   const validated = validatePatch(body);
   if (!validated.ok) return fail(400, 'invalid_patch', validated.reason);
-
-  if (validated.patch.inheritsSystemConfigFrom) {
-    const target = validated.patch.inheritsSystemConfigFrom;
-    if (target === id) {
-      return fail(400, 'invalid_inherit', 'A printer cannot inherit system config from itself.');
-    }
-    if (!getMachines().some((m) => m.id === target)) {
-      return fail(400, 'invalid_inherit', `No printer with id "${target}" exists to inherit system config from.`);
-    }
-  }
 
   const updated = await patchMachine(id, validated.patch);
   revalidatePath('/');

@@ -107,19 +107,6 @@ export async function POST(req: Request) {
   const idCheck = validateMachineId(id, existingIds);
   if (!idCheck.ok) return fail(400, 'invalid_id', idCheck.reason);
 
-  if (input.inheritsSystemConfigFrom) {
-    if (input.inheritsSystemConfigFrom === id) {
-      return fail(400, 'invalid_inherit', 'A printer cannot inherit system config from itself.');
-    }
-    if (!existingIds.includes(input.inheritsSystemConfigFrom)) {
-      return fail(
-        400,
-        'invalid_inherit',
-        `No printer with id "${input.inheritsSystemConfigFrom}" exists to inherit system config from.`
-      );
-    }
-  }
-
   const files = form.getAll('files').filter((f): f is File => f instanceof File);
 
   const hasMachineFile = await (async () => {
