@@ -220,11 +220,10 @@ export function MachineModal({
                   <div className="rounded-md border border-border bg-muted px-3 py-2.5 text-sm">
                     <p className="font-medium text-foreground">One more step in {slicerName}</p>
                     <p className="mt-1 text-xs text-muted-foreground">
-                      To see <span className="text-foreground font-medium">{machine.name}</span> in the
-                      printers list: go to the printer selection page, select{' '}
-                      <span className="text-foreground font-medium">{inheritedFromLabel}</span>, and{' '}
-                      <span className="text-foreground font-medium">{machine.name}</span> will appear
-                      alongside it.
+                      In {slicerName}, go to select printer, choose{' '}
+                      <span className="text-foreground font-medium">{inheritedFromLabel}</span>, and press
+                      Confirm. <span className="text-foreground font-medium">{machine.name}</span> will then
+                      appear in the printers list.
                     </p>
                   </div>
                 )}
